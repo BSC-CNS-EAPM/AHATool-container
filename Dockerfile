@@ -14,15 +14,28 @@ LABEL maintainer="Albert Cañellas-Sole <albert.canellas@bsc.es>" \
 
 # Update to latest packages
 RUN apt-get update --fix-missing && \
-    apt-get install -y wget bzip2 ca-certificates curl git zip libz-dev byobu samtools libncursesw5-dev libbz2-dev lzma-dev liblzma-dev \
+    apt-get install -y wget bzip2 ca-certificates curl zip libz-dev byobu samtools libncursesw5-dev python3-pip libbz2-dev lzma-dev liblzma-dev \
     libcurl4-gnutls-dev hmmer ncbi-blast+ perl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Add AHATool resources
 WORKDIR /home/AHATool/AHATool_Resources
 ADD ./AHATool_Resources/shflags .
 ADD ./AHATool_Resources/update_FASTAdb.pl .
 
+# Install Signalp6
+ADD ./AHATool_Resources/signalp6.tar .
+WORKDIR /home/AHATool/AHATool_Resources/signalp6_fast
+RUN pip install signalp-6-package/ 
+RUN cp -r signalp-6-package/models/* $(python3 -c "import signalp; import os; print(os.path.dirname(signalp.__file__))")/model_weights/
+
+# Install EDirect
+WORKDIR /home/AHATool/AHATool_Resources/edirect
+RUN sh -c "$(curl -fsSL ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)"
+RUN echo "export PATH=\${PATH}:/root/edirect" >> ${HOME}/.bashrc
+
+# Add AHATool
 WORKDIR /home/AHATool
 ADD AHATool.sh .
 

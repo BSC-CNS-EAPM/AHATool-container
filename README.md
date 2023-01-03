@@ -139,7 +139,7 @@ The custom database. An update of this db has to be performed by the user.
 
 'custom_db.ssi'
 Index file for the custom db. Update has to be performed by the user.
->>example how to make ssi file
+example how to make ssi file
 
 'AHATool.sh'
 The tool itself. (Main code)
