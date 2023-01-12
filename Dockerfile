@@ -46,7 +46,16 @@ RUN wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
     make && \
     make check && \
     make install && \
-    cd easel && make install
+    cd easel && make install && \
+    rm /home/AHATool/AHATool_Resources/hmmer/hmmer.tar.gz
+
+# Install T_coffe
+WORKDIR /home/AHATool/AHATool_Resources/hmmer
+RUN wget https://s3.eu-central-1.amazonaws.com/tcoffee-packages/Stable/Latest/T-COFFEE_distribution_Version_13.45.0.4846264.tar.gz && \
+    tar xvf T-COFFEE_distribution_Version_13.45.0.4846264.tar.gz && \
+    cd T-COFFEE_distribution_Version_13.45.0.4846264 && \ 
+    ./install tcoffee
+ENV PATH=/root/.t_coffee/bin/linux:$PATH
 
 # Add AHATool
 WORKDIR /home/AHATool
