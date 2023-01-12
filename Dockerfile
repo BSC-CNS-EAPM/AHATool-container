@@ -14,8 +14,8 @@ LABEL maintainer="Albert Cañellas-Sole <albert.canellas@bsc.es>" \
 
 # Update to latest packages
 RUN apt-get update --fix-missing && \
-    apt-get install -y wget bzip2 ca-certificates curl zip libz-dev byobu samtools libncursesw5-dev python3-pip libbz2-dev lzma-dev liblzma-dev \
-    libcurl4-gnutls-dev hmmer ncbi-blast+ perl && \
+    apt-get install -y wget bzip2 ca-certificates curl git zip libz-dev byobu samtools libncursesw5-dev python3-pip libbz2-dev lzma-dev liblzma-dev \
+    libcurl4-gnutls-dev ncbi-blast+ perl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -23,6 +23,7 @@ RUN apt-get update --fix-missing && \
 WORKDIR /home/AHATool/AHATool_Resources
 ADD ./AHATool_Resources/shflags .
 ADD ./AHATool_Resources/update_FASTAdb.pl .
+ADD ./AHATool_Resources/SOFTWAREneeded.txt .
 
 # Install Signalp6
 ADD ./AHATool_Resources/signalp6.tar .
@@ -34,6 +35,18 @@ RUN cp -r signalp-6-package/models/* $(python3 -c "import signalp; import os; pr
 WORKDIR /home/AHATool/AHATool_Resources/edirect
 RUN sh -c "$(curl -fsSL ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)"
 RUN echo "export PATH=\${PATH}:/root/edirect" >> ${HOME}/.bashrc
+
+# Install HMMER
+WORKDIR /home/AHATool/AHATool_Resources/hmmer
+RUN wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
+    tar zxf hmmer.tar.gz && \
+    cd hmmer-3.3.2 && \
+    mkdir build && \
+    ./configure && \
+    make && \
+    make check && \
+    make install && \
+    cd easel && make install
 
 # Add AHATool
 WORKDIR /home/AHATool
