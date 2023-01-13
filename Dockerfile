@@ -6,7 +6,7 @@ FROM ubuntu:latest
 
 LABEL maintainer="Albert Cañellas-Sole <albert.canellas@bsc.es>" \
     container="AHATool" \
-    about.summary="design catalytic residues, perform in silico directed evolution of an existing active site." \
+    about.summary="AHATool an Automatic HMM and Analysis Tool" \
     about.home="https://github.com/BSC-CNS-EAPM/AHATool-container" \
     software.version="1.0"
 
