@@ -6,6 +6,7 @@ Microbiology and Biotechnology - Streit's lab
 University of Hamburg (D)
 Developed by Nele Schulte (and P.Pérez-García)
 
+Maintainer Albert Cañellas-Sole albert.canellas@bsc.es
 
 
 ## Introduction
