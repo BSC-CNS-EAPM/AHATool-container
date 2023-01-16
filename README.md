@@ -28,18 +28,19 @@ editor since it contain millions of lines.
 The tool can be executed using no parameters and thereby relying on the default
 settings or inserting customized information on how where and what to process.
 
+```
 flags:
-  -p,--prefix:  The prefix the tool will use for produced files.
-                (default: 'yyddmmhhmm') [1]
-  -i,--inputFASTA:  the input FASTA file. (default: 'pet.fasta')
-  -s,--start:  start of execution (search or build). (default: 'build')
-  -d,--database:  database options: 1. nr_db; 2. custom_db (default: 'nr.fa')
-  -e,--evalue:  e-value (recommended: 1e-10). (default: 0.0000000001)
-  -t,--threads:  processor options: 1, 2, 4 (default: 2)
-  -h,--help:  show this help (default: false)
+	-p,--prefix:  The prefix the tool will use for produced files.
+        (default: 'yyddmmhhmm') [1]
+  	-i,--inputFASTA:  the input FASTA file. (default: 'pet.fasta')
+  	-s,--start:  start of execution (search or build). (default: 'build')
+  	-d,--database:  database options: 1. nr_db; 2. custom_db (default: 'nr.fa')
+  	-e,--evalue:  e-value (recommended: 1e-10). (default: 0.0000000001)
+  	-t,--threads:  processor options: 1, 2, 4 (default: 2)
+  	-h,--help:  show this help (default: false)
 
-[1] as in '2101271124' refering to 27.01.20201 - 11:24 a.m.
-
+	[1] as in '2101271124' refering to 27.01.20201 - 11:24 a.m.
+```
 
 
 ### Examples:
