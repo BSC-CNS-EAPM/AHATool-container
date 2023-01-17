@@ -15,15 +15,19 @@ LABEL maintainer="Albert Cañellas-Sole <albert.canellas@bsc.es>" \
 # Update to latest packages
 RUN apt-get update --fix-missing && \
     apt-get install -y wget bzip2 ca-certificates curl git zip libz-dev byobu samtools libncursesw5-dev python3-pip libbz2-dev lzma-dev liblzma-dev \
-    libcurl4-gnutls-dev ncbi-blast+ perl && \
+    libcurl4-gnutls-dev ncbi-blast+ perl libxml-simple-perl cpanminus libwww-perl libnet-perl \
+    libssl-dev libio-socket-ssl-perl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Add AHATool resources
 WORKDIR /home/AHATool/AHATool_Resources
-ADD ./AHATool_Resources/shflags .
-ADD ./AHATool_Resources/update_FASTAdb.pl .
-ADD ./AHATool_Resources/SOFTWAREneeded.txt .
+RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/shflags && \
+    wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/update_FASTAdb.pl && \
+    wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/SOFTWAREneeded.txt 
+#ADD ./AHATool_Resources/shflags .
+#ADD ./AHATool_Resources/update_FASTAdb.pl .
+#ADD ./AHATool_Resources/SOFTWAREneeded.txt .
 
 # Install Signalp6
 ADD ./AHATool_Resources/signalp6.tar .
@@ -32,9 +36,9 @@ RUN pip install signalp-6-package/
 RUN cp -r signalp-6-package/models/* $(python3 -c "import signalp; import os; print(os.path.dirname(signalp.__file__))")/model_weights/
 
 # Install EDirect
-WORKDIR /home/AHATool/AHATool_Resources/edirect
+WORKDIR /home/AHATool/AHATool_Resources
 RUN sh -c "$(curl -fsSL ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh)"
-RUN echo "export PATH=\${PATH}:/root/edirect" >> ${HOME}/.bashrc
+ENV PATH=$PATH:/root/edirect
 
 # Install HMMER
 WORKDIR /home/AHATool/AHATool_Resources/hmmer

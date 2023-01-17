@@ -45,8 +45,13 @@ flags:
 To use this software the user will need to create a volume into the container with the folder that have the database and the input files.
 Run the docker container with the following command:
 ```
-docker run -v /folder/with/database:/home/projects AHATool.sh -i input.fasta -d nr.fa
+docker run -it -v /folder/with/database:/home/projects bsceapm/ahatool:x.x
 ```
+Then run inside the container:
+```
+AHATool.sh -i input.fasta -d nr.fa
+```
+
 
 ### Examples:
 - Example 0: No parameters (default settings)
