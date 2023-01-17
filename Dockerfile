@@ -25,9 +25,6 @@ WORKDIR /home/AHATool/AHATool_Resources
 RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/shflags && \
     wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/update_FASTAdb.pl && \
     wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/SOFTWAREneeded.txt 
-#ADD ./AHATool_Resources/shflags .
-#ADD ./AHATool_Resources/update_FASTAdb.pl .
-#ADD ./AHATool_Resources/SOFTWAREneeded.txt .
 
 # Install Signalp6
 ADD ./AHATool_Resources/signalp6.tar .
