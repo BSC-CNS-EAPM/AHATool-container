@@ -61,7 +61,7 @@ ENV PATH=$PATH:/root/.t_coffee/bin/linux
 
 # Add AHATool
 WORKDIR /home/AHATool
-ADD AHATool.sh .
+RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool.sh
 ENV PATH=$PATH:/home/AHATool
 
 WORKDIR /home/projects
