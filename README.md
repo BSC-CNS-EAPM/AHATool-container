@@ -41,7 +41,12 @@ flags:
 
 	[1] as in '2101271124' refering to 27.01.20201 - 11:24 a.m.
 ```
-
+### Execution with container:
+In order to use this software the user will need to create a volumme into container with the folder that have the database.
+And to run the container with docker use the following command:
+´´´
+docker run -v /folder/with/database:/home/projects AHATool.sh -i input.fasta -d nr.fa
+´´´
 
 ### Examples:
 - Example 0: No parameters (default settings)

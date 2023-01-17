@@ -56,12 +56,14 @@ RUN wget https://s3.eu-central-1.amazonaws.com/tcoffee-packages/Stable/Latest/T-
     cd T-COFFEE_distribution_Version_13.45.0.4846264 && \ 
     ./install tcoffee && \
     rm /home/AHATool/AHATool_Resources/t_coffee/T-COFFEE_distribution_Version_13.45.0.4846264.tar.gz
-ENV PATH=/root/.t_coffee/bin/linux:$PATH
+ENV PATH=$PATH:/root/.t_coffee/bin/linux
 
 # Add AHATool
 WORKDIR /home/AHATool
 ADD AHATool.sh .
+ENV PATH=$PATH:/home/AHATool
 
+WORKDIR /home/projects
  
 
 
