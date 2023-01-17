@@ -1,0 +1,12 @@
+libz-dev
+byobu
+samtools
+libncursesw5-dev
+libbz2-dev
+lzma-dev 
+liblzma-dev
+libcurl4-gnutls-dev
+hmmbuild
+hmmsearch
+ncbi-blast+
+perl
