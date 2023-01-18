@@ -22,9 +22,9 @@ RUN apt-get update --fix-missing && \
 
 # Add AHATool resources
 WORKDIR /home/AHATool/AHATool_Resources
-RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/shflags && \
-    wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/update_FASTAdb.pl && \
-    wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool_Resources/SOFTWAREneeded.txt 
+RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/shflags && \
+    wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/update_FASTAdb.pl && \
+    wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/SOFTWAREneeded.txt 
 
 # Install Signalp6
 ADD ./AHATool_Resources/signalp6.tar .
@@ -61,7 +61,8 @@ ENV PATH=$PATH:/root/.t_coffee/bin/linux
 
 # Add AHATool
 WORKDIR /home/AHATool
-RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/blob/main/AHATool.sh
+RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool.sh && \
+    chmod +x AHATool.sh
 ENV PATH=$PATH:/home/AHATool
 
 WORKDIR /home/projects

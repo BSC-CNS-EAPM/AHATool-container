@@ -16,7 +16,7 @@ fi
 #==============================================================================
 # Parsing Input
 #==============================================================================
-. ./AHATool_Resources/shflags
+. ../AHATool/AHATool_Resources/shflags
 
 # Define strings:
 DEFINE_string prefix $PREFIX "The prefix the tool will use for produced files." p
@@ -350,7 +350,7 @@ check_online_connection
 printf "=======================================================================
 Checking for needed software:
 ---------------------------------\n"
-software_needed=$WORKING_DIR/AHATool_Resources/SOFTWAREneeded.txt
+software_needed=$WORKING_DIR/../AHATool/AHATool_Resources/SOFTWAREneeded.txt
 check_for_packages $software_needed
 
 if (($COUNTER>0)); then 
