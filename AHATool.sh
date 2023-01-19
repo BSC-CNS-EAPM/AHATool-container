@@ -5,6 +5,11 @@
 # Caputure pseudo-unique prefix
 RIGHT_NOW=`date "+%y%m%d%H%M"`
 
+# Check if the results directory exists
+if [ ! -d "$(pwd)/Project_Results" ]; then
+	mkdir $(pwd)/Project_Results
+fi
+
 # Check if within the same minute another execution had been started.
 # If so set the prefix with addition of the seconds.
 if [ -d "$(pwd)/Project_Results/$RIGHT_NOW" ]; then

@@ -24,7 +24,7 @@ RUN apt-get update --fix-missing && \
 WORKDIR /home/AHATool/AHATool_Resources
 RUN wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/shflags && \
     wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/update_FASTAdb.pl && \
-    wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/SOFTWAREneeded.txt 
+    wget https://github.com/BSC-CNS-EAPM/AHATool-container/raw/main/AHATool_Resources/SOFTWAREneeded.txt
 
 # Install Signalp6
 ADD ./AHATool_Resources/signalp6.tar .
