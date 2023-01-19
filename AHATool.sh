@@ -5,6 +5,9 @@
 # Caputure pseudo-unique prefix
 RIGHT_NOW=`date "+%y%m%d%H%M"`
 
+WORKING_DIR=$(pwd) # pwd=print working directory
+OUTPUT_DIR=$WORKING_DIR/Project_Results/"$RIGHT_NOW"
+
 # Check if the results directory exists
 if [ ! -d "$(pwd)/Project_Results" ]; then
 	mkdir $(pwd)/Project_Results
@@ -27,6 +30,7 @@ fi
 DEFINE_string prefix $PREFIX "The prefix the tool will use for produced files." p
 DEFINE_string input 'sequences.fasta' "the input file (fasta, aln or hmm)." i
 #DEFINE_string start 'build' "start of execution (search or build)." s
+DEFINE_string output $OUTPUT_DIR "The path of the workspace" o
 DEFINE_string database 'nr.fa' "database options: 1. nr_db; 2. custom_db" d
 DEFINE_string update 'yes' "database update if possible? yes/no?" u
 DEFINE_string cladogram 'yes' "Prepare tree file for cladogram? yes/no?" c	
@@ -54,7 +58,7 @@ if [ -f "nr.fa" ]; then
 	if [ "${FLAGS_update}" = "yes" ] &&[ "${FLAGS_database}" = "nr.fa" ] && [ `stat --format=%Y nr.fa` -le $(( `date +%s` - 180000 )) ]; then 
 		# Checking if an update of nr.gz is possible
 		printf "Checking whether there is a new update of nr.gz available.\n"
-		perl ./AHATool_Resources/update_FASTAdb.pl nr;
+		perl ../AHATool/AHATool_Resources/update_FASTAdb.pl nr;
 		if [ $? -eq 0 ]; then
 			echo "${`tput setaf 2`} No update was necessary. ${`tput sgr0`}"
 		else
@@ -72,11 +76,14 @@ TITLE="HMM Tool for $HOSTNAME"
 TIME_STAMP="Executed on $(date +"%x %r") by $USER"
 COUNTER=0
 HITS_COUNT=0
-WORKING_DIR=$(pwd) # pwd=print working directory
+
+
 PREFIX=${FLAGS_prefix}
 DATABASE=${FLAGS_database}
 THREADS=${FLAGS_threads}
 INPUT_FILE=${FLAGS_input}
+OUTPUT_DIR=${FLAGS_output}
+
 START="build" #${FLAGS_start} #of execution (hmmbuild or hmmsearch)
 E_VALUE=${FLAGS_evalue}
 INPUT_DIR=${FLAGS_ARGV:1:-1}
@@ -92,8 +99,8 @@ if [ ! -f "$INPUT_FILE" ]
 fi
 
 # Make subdirectory in input directory
-mkdir $WORKING_DIR/Project_Results/"$RIGHT_NOW"
-OUTPUT_DIR=$WORKING_DIR/Project_Results/"$RIGHT_NOW"
+mkdir $OUTPUT_DIR
+
 cp $INPUT_FILE $OUTPUT_DIR
 
 # Colors:
