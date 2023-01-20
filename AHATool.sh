@@ -6,7 +6,7 @@
 RIGHT_NOW=`date "+%y%m%d%H%M"`
 
 WORKING_DIR=$(pwd) # pwd=print working directory
-OUTPUT_DIR=$WORKING_DIR/Project_Results/"$RIGHT_NOW"
+OUTPUT_DIR="${WORKING_DIR}/Project_Results/${RIGHT_NOW}"
 
 # Check if the results directory exists
 if [ ! -d "$(pwd)/Project_Results" ]; then
@@ -567,7 +567,7 @@ find $WORKING_DIR/ -maxdepth 1 -name "$PREFIX"_"$INPUT_FILE"_hmm.aln -exec mv {}
 printf "\n=======================================================================
 Creating a summary table...\n"
 
-# Extract 1st column with IDs
+# Extract 1st column with IDs 
 grep "^[^#;]" "$PREFIX"_"$INPUT_FILE"_hmm.tbl | cut -d" " -f1 > "$F1"
 {
 esl-sfetch -f $DATABASE "$F1" > "$PREFIX"_all_hits.fa

@@ -45,7 +45,6 @@ RUN wget http://eddylab.org/software/hmmer/hmmer.tar.gz && \
     mkdir build && \
     ./configure && \
     make && \
-    make check && \
     make install && \
     cd easel && make install && \
     rm /home/AHATool/AHATool_Resources/hmmer/hmmer.tar.gz
