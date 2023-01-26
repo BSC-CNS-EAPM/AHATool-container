@@ -63,6 +63,7 @@ WORKDIR /home/AHATool
 ADD AHATool.sh .
 ENV PATH=$PATH:/home/AHATool/AHATool.sh
 
+WORKDIR /home/database
 WORKDIR /home/projects
  
 

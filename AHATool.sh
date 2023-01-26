@@ -430,16 +430,18 @@ printf "=======================================================================
 Checking for needed files:
 ---------------------------------\n"
 # Check in the input folder (given as parameter) for database
-
-if [ -e "$INPUT_DIR/$DATABASE" ]
+if ["${DATABASE}" = 'nr.fa'] 
+	then DATABASE = "$INPUT_DIR/$DATABASE"
+fi
+if [ -e "$DATABASE" ]
 			then echo "${GREEN} Database ($DATABASE) exists. ${RESET}" # in $2"
-			else echo "${RED} Database ($DATABASE) is missing in $INPUT_DIR. ${RESET}" 
+			else echo "${RED} Database ($DATABASE) is missing. ${RESET}" 
 				echo "${RED} The tool can not proceed due to the lack of a database. ${RESET}"
 				exit
 fi
 
 # Checking for existence of an index file (namely $DATABASE.ssi)
-if [ -e "$INPUT_DIR/$DATABASE.ssi" ]
+if [ -e "$DATABASE.ssi" ]
 then 
 	echo "${GREEN} Index file ($DATABASE.ssi) exists. ${RESET}"
 else 
@@ -475,6 +477,7 @@ else
 fi
 	printf "=======================================================================
 Initiating MSA using t-coffee...\n"
+	printf "F0: $F0 , INPUT_FILE: $INPUT_FILE"
 	{
 	t_coffee "$INPUT_FILE" -run_name "$F0".aln
 	} 1>/dev/null 2>&1
