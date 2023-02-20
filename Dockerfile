@@ -8,7 +8,7 @@ LABEL maintainer="Albert Cañellas-Sole <albert.canellas@bsc.es>" \
     container="AHATool" \
     about.summary="AHATool an Automatic HMM and Analysis Tool" \
     about.home="https://github.com/BSC-CNS-EAPM/AHATool-container" \
-    software.version="1.8"
+    software.version="2.0"
 
 ################## INSTALLATION ######################
 

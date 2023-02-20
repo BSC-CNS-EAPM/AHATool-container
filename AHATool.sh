@@ -29,7 +29,7 @@ fi
 # Define strings:
 DEFINE_string prefix $PREFIX "The prefix the tool will use for produced files." p
 DEFINE_string input 'sequences.fasta' "the input file (fasta, aln or hmm)." i
-#DEFINE_string start 'build' "start of execution (search or build)." s
+DEFINE_string start 'build' "start of execution (search or build)." s
 DEFINE_string output $OUTPUT_DIR "The path of the workspace" o
 DEFINE_string database 'nr.fa' "database options: 1. nr_db; 2. custom_db" d
 DEFINE_string update 'yes' "database update if possible? yes/no?" u
@@ -84,7 +84,7 @@ THREADS=${FLAGS_threads}
 INPUT_FILE=${FLAGS_input}
 OUTPUT_DIR=${FLAGS_output}
 
-START="build" #${FLAGS_start} #of execution (hmmbuild or hmmsearch)
+START=${FLAGS_start} #of execution (hmmbuild or hmmsearch)
 E_VALUE=${FLAGS_evalue}
 INPUT_DIR=${FLAGS_ARGV:1:-1}
 
@@ -415,10 +415,21 @@ COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.faa" | wc -l)))
 COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.fa" | wc -l)))
 printf "$COUNTER \n"
 
+printf "HMM files found: "
+COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.hmm" | wc -l)))
+printf "$COUNTER \n"
+
 #If only one file with matching format is found use that file
-if (($COUNTER==1)); then 
-	INPUT_FILE=$(find $INPUT_DIR -type f \( -iname \*.fasta -o -iname \*.faa -o -iname \*.fa -o -iname \*.hmm \))
-fi
+#echo "pwd : $(pwd)"
+#echo "ls: $(ls)"
+#echo "input_prev: ${INPUT_FILE}"
+#echo "input_dir_prev: ${INPUT_DIR}"
+#if (($COUNTER==1)); then 
+#	INPUT_FILE=$(find $INPUT_DIR -type f \( -iname \*.fasta -o -iname \*.faa -o -iname \*.fa -o -iname \*.hmm \))
+#fi
+
+#echo "input_post: ${INPUT_FILE}"
+
 
 if (($COUNTER==0)); then 
 	echo "${RED}The tool can not proceed due to the lack of an INPUT files 
@@ -430,19 +441,21 @@ printf "=======================================================================
 Checking for needed files:
 ---------------------------------\n"
 # Check in the input folder (given as parameter) for database
+
 if ["${DATABASE}" = 'nr.fa'] 
 	then DATABASE = "$INPUT_DIR/$DATABASE"
 fi
-if [ -e "$DATABASE" ]
-			then echo "${GREEN} Database ($DATABASE) exists. ${RESET}" # in $2"
-			else echo "${RED} Database ($DATABASE) is missing. ${RESET}" 
-				echo "${RED} The tool can not proceed due to the lack of a database. ${RESET}"
-				exit
+
+if [ -e "$DATABASE" ]; then 
+	echo "${GREEN} Database ($DATABASE) exists. ${RESET}" # in $2"
+else 
+	echo "${RED} Database ($DATABASE) is missing. ${RESET}" 
+	echo "${RED} The tool can not proceed due to the lack of a database. ${RESET}"
+	exit
 fi
 
 # Checking for existence of an index file (namely $DATABASE.ssi)
-if [ -e "$DATABASE.ssi" ]
-then 
+if [ -e "$DATABASE.ssi" ]; then 
 	echo "${GREEN} Index file ($DATABASE.ssi) exists. ${RESET}"
 else 
 	echo "Index file ($DATABASE.ssi) is missing. An index file is being generated..."
@@ -456,7 +469,6 @@ printf "${ICE}The files created within this run will be identifiable by the pref
 \"$PREFIX\".\n${RESET}"
 printf "${ICE}They will be saved in the folder /Project_Results 
 and the subfolder \"$RIGHT_NOW\".\n${RESET}"
-
 if [[ $INPUT_FILE == *.hmm ]]; then
 	START="search"
 fi
@@ -466,17 +478,17 @@ fi
 
 if [ "$START" == "build" ] || (($COUNTER==0)); then 
 
-#checking for file *".aln" in the input directory
-COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.aln" | wc -l)))
+	#checking for file *".aln" in the input directory
+	COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.aln" | wc -l)))
 
-# This file decides where the tool starts (hmm -build oder -search)
-if (($COUNTER==0)); then
-    echo "No matching .aln file found."
-else 
-    echo "${GREEN} A file with an .aln format was found. ${RESET}"
-fi
+	# This file decides where the tool starts (hmm -build oder -search)
+	if (($COUNTER==0)); then
+    	echo "No matching .aln file found."
+	else 
+    	echo "${GREEN} A file with an .aln format was found. ${RESET}"
+	fi
 	printf "=======================================================================
-Initiating MSA using t-coffee...\n"
+	Initiating MSA using t-coffee...\n"
 	printf "F0: $F0 , INPUT_FILE: $INPUT_FILE"
 	{
 	t_coffee "$INPUT_FILE" -run_name "$F0".aln
@@ -488,46 +500,47 @@ Initiating MSA using t-coffee...\n"
 	t_coffee -other_pg seq_reformat -in "$F0".aln -output fasta_aln > "$F0".fasta
 	#t_coffee -other_pg seq_reformat -in sequences.aln -output fasta_aln > "$PREFIX"_"$INPUT_FILE"_"aln.fasta" 
 	check_success "MSA"
-#else 	
+	#else 	
 	##touch $WORKING_DIR/"$F0".aln
 	#cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".aln") >"$F0".aln
-#==============================================================================
-# Build an HMM
-#==============================================================================
-# Resetting the count
-COUNTER=0 
+	#==============================================================================
+	# Build an HMM
+	#==============================================================================
+	# Resetting the count
+	COUNTER=0 
 
-#checking for file *".hmm" in the input directory
-COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.hmm" | wc -l)))
+	#checking for file *".hmm" in the input directory
+	COUNTER=$(($COUNTER + $(find $INPUT_DIR -maxdepth 1 -name "*.hmm" | wc -l)))
 
-# This file decides where the tool starts (hmm -build oder -search)
-if (($COUNTER==0)); then
-    echo "$No .hmm file found. AHATool will start with building a HMM profile."
-else 
-    echo "${GREEN} A file with an .hmm format was found. ${RESET}"
-	if [ "$START" = "search" ]; then 
-		echo "Therefore tool will start with a search right away."
+	# This file decides where the tool starts (hmm -build oder -search)
+	if (($COUNTER==0)); then
+    	echo "$No .hmm file found. AHATool will start with building a HMM profile."
+	else 
+    	echo "${GREEN} A file with an .hmm format was found. ${RESET}"
+		if [ "$START" = "search" ]; then 
+			echo "Therefore tool will start with a search right away."
+		fi
 	fi
-fi
 
-#if [ "$START" = "build" ] || (($COUNTER==0)); then 
+	#if [ "$START" = "build" ] || (($COUNTER==0)); then 
 	printf "=======================================================================
-Constructing HMM profile from MSA...\n"
+	Constructing HMM profile from MSA...\n"
 	start=`date +%s`
 	{
-	hmmbuild "$PREFIX"_"$INPUT_FILE".hmm "$F0".fasta
+		hmmbuild "$PREFIX"_"$INPUT_FILE".hmm "$F0".fasta
 	} 1>/dev/null 2>&1
 	end=`date +%s`
 	printf "${ICE}... completed in $(format_time `expr $end - $start`)\n${RESET}"
 	check_success "HMM profile"
-#else 	
-#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".hmm") > "$PREFIX"_"$INPUT_FILE".hmm
-#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".html") > "$PREFIX"_"$INPUT_FILE".html
-#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".fasta") > "$PREFIX"_"$INPUT_FILE".fasta
-#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".dnd") > "$PREFIX"_"$INPUT_FILE".dnd
+	#else 	
+	#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".hmm") > "$PREFIX"_"$INPUT_FILE".hmm
+	#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".html") > "$PREFIX"_"$INPUT_FILE".html
+	#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".fasta") > "$PREFIX"_"$INPUT_FILE".fasta
+	#	cat $(find $INPUT_DIR -maxdepth 1 -name "*"$INPUT_FILE".dnd") > "$PREFIX"_"$INPUT_FILE".dnd
 elif  [ "$START" = "search" ]; then 
 	cp $INPUT_FILE "$PREFIX"_"$INPUT_FILE"
 fi
+
 # HMM search: searching the constructed protein profile HMM against a protein sequence database.
 printf "=======================================================================
 Searching profile HMM against given database...\n"
@@ -873,23 +886,23 @@ else
 	paste  "$F2" "$F3" > "$PREFIX"_Summary.tsv
 	check_success "Creation of summary table"
 
-printf "Creating taxonomy plot...\n"
-#sed -i -e 's/^([^:]*.[^:]*):.*$/\1/' "$F4"
+	printf "Creating taxonomy plot...\n"
+	#sed -i -e 's/^([^:]*.[^:]*):.*$/\1/' "$F4"
 
-check_success "Creation of taxonomy plot"
+	check_success "Creation of taxonomy plot"
 
 	rm -f "$F3"
 	rm -f "$F2"
 
-#auskommentiert für Debugging:
-#	rm -f "$PREFIX"_summary_blast.txt
+	#auskommentiert für Debugging:
+	#	rm -f "$PREFIX"_summary_blast.txt
 	cp "$PREFIX"_Summary.tsv "$PREFIX"_Summary.xls
 	find $pwd -maxdepth 1 -name "$PREFIX""_Summary*" -exec mv {} $OUTPUT_DIR \;
 
-#CONSTRUCTIONSITE :D 13.07.2021
-# both don't work as I need them to but kind of half way
-#paste -d ";" - - <"$PREFIX"_intermediate_hits.fa | awk 'BEGIN{OFS=FS=";"}{print $1,$2,$3,$4"\n"$5>$2".fa"}'
-#paste -d ";" - - <"$PREFIX"_intermediate_hits.fa | awk 'BEGIN{OFS=FS=";"}{if($2=="partial=00"){print $1,$2,$3,$4"\n"$5>"non_partial.fa"}else{print $1,$2,$3,$4"\n"$5>"partial.fna"}}'
+	#CONSTRUCTIONSITE :D 13.07.2021
+	# both don't work as I need them to but kind of half way
+	#paste -d ";" - - <"$PREFIX"_intermediate_hits.fa | awk 'BEGIN{OFS=FS=";"}{print $1,$2,$3,$4"\n"$5>$2".fa"}'
+	#paste -d ";" - - <"$PREFIX"_intermediate_hits.fa | awk 'BEGIN{OFS=FS=";"}{if($2=="partial=00"){print $1,$2,$3,$4"\n"$5>"non_partial.fa"}else{print $1,$2,$3,$4"\n"$5>"partial.fna"}}'
 
 	rm "$PREFIX"_intermediate_hits.fa
 fi
